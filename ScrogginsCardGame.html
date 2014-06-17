@@ -1,0 +1,80 @@
+<script>
+  //create new deck
+  function Deck() {
+    this.cards = [];
+    this.count = function() {
+      return this.cards.length;
+    }
+    this.init = function() {
+      //the following two lines create the suits and the individual cards
+      for (s = 1; s <= 4; s++){
+        for (r = 1; r <= 13; r++) {
+          //this calls the Object Card below to fill out the Deck
+          this.cards.push(new Card(r, s));
+        }
+      }
+    }  
+  }
+
+  //create new card for the deck
+  function Card(rank, suit) {
+    this.rank = rank;
+    this.suit = suit;
+    this.show = function() {
+      console.log(this.rank + " of " + this.suit);
+    }
+  }
+
+  d = new Deck();
+  d.init();
+
+  //defines the Player with a name property and a method that shows the card that the player has played
+  function Player(name, luck) {
+    this.name = name;
+    this.luck = luck; 
+    this.win = 0;
+    //this.playedCard = Card.show();
+    this.play = function() {
+      if(this.luck >= 3) {
+        //gives an advantage to the one with the greater luck by multiplying a low pulled card by 3
+        return (Math.floor(Math.random() * 4 + 1)) * this.luck;
+      }
+      else {
+        return (Math.floor(Math.random() * 13 + 1)) / this.luck;
+      }
+    }
+  }
+
+    //creates new players
+    playerOne = new Player("Felicity", 1);
+    playerTwo = new Player("Ben", 3);
+
+    //calls the play object from the Player function
+    for(war = 0; war < 27; war++){
+      playerOne.play();
+      playerTwo.play();
+       
+       //displays the results of the card game in the console log
+      console.log(playerTwo.name + " draws a " + playerTwo.play() + "; " + playerOne.name + " draws a " + playerOne.play());
+      
+      //adds 1 to the win column for the winner
+      if(playerOne.play() > playerTwo.play()) {
+        playerOne.win = playerOne.win + 1;
+      }
+      else if(playerTwo.play() > playerOne.play()) {
+        playerTwo.win = playerTwo.win + 1;
+      }
+    }
+
+  //provides an alert box to tell the overall winner of the game
+  if(playerOne.win > playerTwo.win) {
+    alert(playerOne.name + " wins " + playerOne.win + " to " + playerTwo.win);
+  }
+  else if(playerTwo.win > playerOne.win) {
+    alert(playerTwo.name + " wins " + playerTwo.win + " to " + playerOne.win);
+  }
+  else if(playerOne.win == playerTwo.win) {
+    alert("The game ends in a draw. " + playerOne.win + " to " + playerTwo.win);
+  }
+
+</script>
