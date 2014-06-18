@@ -5,6 +5,9 @@
     this.count = function() {
       return this.cards.length;
     }
+    this.hasCards = function() {
+      return this.cards.length != 0;
+    }
     this.init = function() {
       //the following two lines create the suits and the individual cards
       for (s = 1; s <= 4; s++){
@@ -20,49 +23,52 @@
   function Card(rank, suit) {
     this.rank = rank;
     this.suit = suit;
-    this.show = function() {
-      console.log(this.rank + " of " + this.suit);
+    this.asString = function() {
+      return this.showRank() + " of " + this.showSuit ();
+    }
+    this.showRank = function () {
+      var ranks = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "Jack", "Queen", "King"]
+      return ranks[this.rank - 1]
+    }
+    this.showSuit = function() {
+      var suits = ["Hearts", "Spades", "Diamonds", "Clubs"]
+      return suits[this.suit - 1]
     }
   }
 
-  d = new Deck();
-  d.init();
+  deck = new Deck();
+  deck.init();
+
 
   //defines the Player with a name property and a method that shows the card that the player has played
-  function Player(name, luck) {
+  function Player(name) {
     this.name = name;
-    this.luck = luck; 
     this.win = 0;
-    //this.playedCard = Card.show();
     this.play = function() {
-      if(this.luck >= 3) {
-        //gives an advantage to the one with the greater luck by multiplying a low pulled card by 3
-        return (Math.floor(Math.random() * 4 + 1)) * this.luck;
-      }
-      else {
-        return (Math.floor(Math.random() * 13 + 1)) / this.luck;
-      }
+      var index = Math.floor(Math.random() * deck.cards.length);
+      var dealtCard = deck.cards[index];
+      
+      deck.cards.splice(index, 1);
+      return dealtCard;
     }
   }
 
     //creates new players
-    playerOne = new Player("Felicity", 1);
-    playerTwo = new Player("Ben", 3);
+    playerOne = new Player("Felicity");
+    playerTwo = new Player("Ben");
 
     //calls the play object from the Player function
-    for(war = 0; war < 27; war++){
-      playerOne.play();
-      playerTwo.play();
-       
-       //displays the results of the card game in the console log
-      console.log(playerTwo.name + " draws a " + playerTwo.play() + "; " + playerOne.name + " draws a " + playerOne.play());
-      
-      //adds 1 to the win column for the winner
-      if(playerOne.play() > playerTwo.play()) {
-        playerOne.win = playerOne.win + 1;
+    while (deck.hasCards()) {
+      var p1Card = playerOne.play();
+      var p2Card = playerTwo.play();
+
+      console.log(playerTwo.name + " draws a " + p2Card.asString() + "; " + playerOne.name + " draws a " + p1Card.asString());
+
+      if(p1Card.rank > p2Card.rank) {
+        playerOne.win += 1;
       }
-      else if(playerTwo.play() > playerOne.play()) {
-        playerTwo.win = playerTwo.win + 1;
+      else {
+        playerTwo.win += 1;
       }
     }
 
